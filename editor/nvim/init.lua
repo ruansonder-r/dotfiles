@@ -1,0 +1,37 @@
+require("wvdm")
+
+-- VSCODE plugin
+vim.opt.runtimepath:prepend("~/.vim")
+vim.opt.runtimepath:append("~/.vim/after")
+vim.o.packpath = vim.o.runtimepath
+
+if vim.g.vscode then
+  -- VSCode extension
+  -- THEME CHANGER
+  vim.api.nvim_exec([[
+      " THEME CHANGER
+      function! SetCursorLineNrColorInsert(mode)
+          " Insert mode: blue
+          if a:mode == "i"
+              call VSCodeNotify('nvim-theme.insert')
+  
+          " Replace mode: red
+          elseif a:mode == "r"
+              call VSCodeNotify('nvim-theme.replace')
+          endif
+      endfunction
+  
+      augroup CursorLineNrColorSwap
+          autocmd!
+          autocmd ModeChanged *:[vV\x16]* call VSCodeNotify('nvim-theme.visual')
+          autocmd ModeChanged *:[R]* call VSCodeNotify('nvim-theme.replace')
+          autocmd InsertEnter * call SetCursorLineNrColorInsert(v:insertmode)
+          autocmd InsertLeave * call VSCodeNotify('nvim-theme.normal')
+          autocmd CursorHold * call VSCodeNotify('nvim-theme.normal')
+          autocmd ModeChanged [vV\x16]*:* call VSCodeNotify('nvim-theme.normal')
+      augroup END
+  ]], false)
+else -- ordinary Neovim
+
+end
+
