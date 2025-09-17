@@ -76,6 +76,9 @@ install_package "htop" "htop"
 install_package "tree" "tree"
 install_package "ripgrep" "ripgrep"
 install_package "fd-find" "fd"
+install_package "bat" "bat"
+install_package "fzf" "fzf"
+install_package "thefuck" "thefuck"
 
 # Install Neovim
 if command_exists "nvim"; then
@@ -128,12 +131,45 @@ else
     print_success "Homebrew installed successfully"
 fi
 
+# Install Rust-based tools via cargo (after ensuring Rust is available)
+if command_exists "cargo"; then
+    print_status "Installing modern CLI tools via cargo..."
+    
+    if ! command_exists "zoxide"; then
+        print_status "Installing zoxide..."
+        cargo install zoxide
+        print_success "zoxide installed successfully"
+    else
+        print_success "zoxide is already installed"
+    fi
+    
+    if ! command_exists "eza"; then
+        print_status "Installing eza..."
+        cargo install eza
+        print_success "eza installed successfully"
+    else
+        print_success "eza is already installed"
+    fi
+else
+    print_warning "Cargo not available, skipping Rust-based tool installation"
+fi
+
+# Install LunarVim
+if command_exists "lvim"; then
+    print_success "LunarVim is already installed"
+else
+    print_status "Installing LunarVim..."
+    bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh) --yes
+    print_success "LunarVim installed successfully"
+fi
+
 print_success "All dependencies installed successfully!"
 
 echo
 print_status "Next steps:"
 echo "1. Run the main installation script: ./install/install.sh"
 echo "2. Restart your terminal"
-echo "3. Install Neovim plugins by running: nvim +PackerSync"
+echo "3. Configure LunarVim by editing ~/.config/lvim/config.lua"
+echo "4. Set up shell aliases by sourcing: source ~/.zshrc"
 echo
 print_warning "Note: Some tools may require additional configuration after installation." 

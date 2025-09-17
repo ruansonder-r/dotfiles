@@ -8,7 +8,8 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
-sh /home/ruan/gnome.sh &
+
+#sh /home/ruan/gnome.sh &
 
 # if running bash
 if [ -n "$BASH_VERSION" ]; then

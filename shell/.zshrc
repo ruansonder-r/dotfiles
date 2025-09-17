@@ -53,5 +53,15 @@ alias vpnOF='~/bin/VPNs/Office/./vpnOF'
 alias vpnUCL='cd ~/bin/VPNs/UCL && sudo openfortivpn -c ucl_config'
 alias vpnJS='cd ~/bin/VPNs/JandS/ && sudo openvpn --config sslvpn-agrigateone-client-config.ovpn'
 alias vpnMC="sudo -E gpclient connect vpn.moutoncitrus.co.za"
+alias rr='bundle exec rerun'
+#alias runcurse='cd ~/Downloads && ./Cursor-1.3.9-x86_64.AppImage >/dev/null 2>&1 & disown && exit'
+alias cursor='nohup /home/ruan/Downloads/Cursor-1.3.9-x86_64.AppImage >/dev/null 2>&1 & disown'
+alias debugnsoffice='bundle exec rdbg --open -n -c -- bundle exec rerun'
+alias fzfp='fzf --preview "batcat --color=always --style=numbers --line-range=:500 {}"'
+
+eval "$(zoxide init --cmd cd zsh)"
+eval $(thefuck --alias)
+
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
 alias debugnspack="bundle exec rdbg --open -n -c -- bundle exec rerun"
 alias lll='ls -la'

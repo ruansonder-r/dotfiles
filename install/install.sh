@@ -95,6 +95,7 @@ fi
 # Create necessary directories
 print_status "Creating necessary directories..."
 mkdir -p ~/.config
+mkdir -p ~/.config/lvim
 
 # Install shell configurations
 print_status "Installing shell configurations..."
@@ -107,10 +108,12 @@ install_file "$DOTFILES_DIR/shell/.zshenv" ~/.zshenv
 # Install editor configurations
 print_status "Installing editor configurations..."
 install_directory "$DOTFILES_DIR/editor/nvim" ~/.config/nvim
+install_file "$DOTFILES_DIR/editor/lunarvim/config.lua" ~/.config/lvim/config.lua
 
 # Install git configurations
 print_status "Installing git configurations..."
 install_file "$DOTFILES_DIR/git/.gitconfig" ~/.gitconfig
+install_file "$DOTFILES_DIR/git/.gitignore_global" ~/.gitignore_global
 install_directory "$DOTFILES_DIR/git/lazygit" ~/.config/lazygit
 
 print_success "Installation completed successfully!"
@@ -119,11 +122,10 @@ print_success "Installation completed successfully!"
 echo
 print_status "Post-installation steps:"
 echo "1. Restart your terminal or run: source ~/.zshrc"
-echo "2. Install Oh My Zsh if not already installed:"
-echo "   sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\""
-echo "3. Install Neovim plugins by running: nvim +PackerSync"
-echo "4. Install LazyGit if not already installed:"
-echo "   sudo apt install lazygit"
+echo "2. Install dependencies by running: ./install/dependencies.sh"
+echo "3. LunarVim configuration will be automatically loaded on first run"
+echo "4. Modern CLI tools (zoxide, fzf, ripgrep) should now be available"
+echo "5. Set up Git with: git config --global user.name 'Your Name'"
 echo
 print_warning "Note: Some configurations may require additional packages or manual setup."
 print_warning "Check the README.md for more details." 

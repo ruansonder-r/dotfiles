@@ -105,6 +105,18 @@ if [ -f ~/.bash_aliases ]; then
   . ~/.bash_aliases
 fi
 
+# Modern CLI tool aliases
+alias fzfp='fzf --preview "batcat --color=always --style=numbers --line-range=:500 {}"'
+
+# Initialize modern tools if available
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init bash)"
+fi
+
+if command -v thefuck >/dev/null 2>&1; then
+    eval $(thefuck --alias)
+fi
+
 alias test = 'xdg-open https://www.youtube.com/watch?v=dQw4w9WgXcQ'
 
 # enable programmable completion features (you don't need to enable
