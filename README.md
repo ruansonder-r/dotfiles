@@ -1,6 +1,6 @@
 # Ruan's Dotfiles
 
-A modern collection of personal configuration files for a productive Ubuntu development environment.
+A modern collection of personal configuration files for productive development environments on Ubuntu, Arch Linux, and other Unix-like systems.
 
 ## What's Included
 
@@ -11,13 +11,34 @@ A modern collection of personal configuration files for a productive Ubuntu deve
 
 ## Quick Install
 
-After cloning this repository, run:
+### Ubuntu/Debian Systems
 
 ```bash
 cd dotfiles
 ./install/dependencies.sh  # Install all required packages and tools
 ./install/install.sh        # Deploy configurations
 ```
+
+### Arch Linux Systems
+
+```bash
+cd dotfiles
+./install/dependencies-arch.sh  # Install packages via pacman/yay
+./install/install-arch.sh        # Deploy Arch-optimized configurations
+```
+
+### Universal (Nix-based)
+
+For any Linux distribution with Nix support:
+
+```bash
+cd dotfiles
+./install/dependencies-nix.sh  # Install via Nix package manager
+./install/install.sh           # Deploy configurations
+```
+
+📖 **See [ARCH_SETUP.md](ARCH_SETUP.md) for detailed Arch Linux instructions**
+📋 **See [ALIASES.md](ALIASES.md) for a complete reference of all available aliases**
 
 ## Manual Installation
 
@@ -74,8 +95,13 @@ dotfiles/
 │   ├── .gitignore_global # Global gitignore patterns
 │   └── lazygit/        # LazyGit configuration
 ├── install/            # Installation scripts
-│   ├── dependencies.sh # Install all required packages
-│   └── install.sh      # Deploy configurations
+│   ├── dependencies.sh     # Ubuntu/Debian packages
+│   ├── dependencies-arch.sh # Arch Linux packages
+│   ├── dependencies-nix.sh  # Nix packages (universal)
+│   ├── install.sh          # Deploy configurations (Ubuntu)
+│   ├── install-arch.sh     # Deploy with Arch optimizations
+│   ├── backup.sh           # Backup current configs (Ubuntu)
+│   └── backup-arch.sh      # Backup current configs (Arch)
 └── README.md
 ```
 
@@ -126,6 +152,21 @@ dotfiles/
 - `git br`: Branch
 - `git unstage`: Unstage files
 
+## Platform-Specific Features
+
+### Arch Linux Enhancements
+- **Package Management Aliases**: `pac`, `pacu`, `yays`, `parus` for easy package operations
+- **System Maintenance**: `cleanup` for orphaned packages, `mirrors` for updating mirrors
+- **Enhanced File Listing**: `eza` with icons and better formatting
+- **AUR Support**: Automatic `yay` and `paru` installation and usage
+- **Arch-optimized Paths**: Corrected paths for Arch package locations
+
+### Nix Integration
+- **Cross-platform Compatibility**: Works on any Linux distribution
+- **Isolated Environment**: Packages don't conflict with system packages
+- **Reproducible Setup**: Exact package versions and dependencies
+- **Easy Management**: Simple commands for package operations
+
 ## Notes
 
 - The installation script automatically backs up existing configurations
@@ -133,6 +174,7 @@ dotfiles/
 - Modern CLI tools are installed via the dependencies script
 - Ruby development shortcuts are included for Rails projects
 - VPN configurations are included but may need path adjustments
+- Arch users get additional package management aliases and system maintenance tools
 
 ## License
 

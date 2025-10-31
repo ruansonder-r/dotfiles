@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Dependencies Installation Script for Ruan's Dotfiles
-# This script installs all necessary packages and tools
+# Dependencies Installation Script for Ruan's Dotfiles - Arch Linux
+# This script installs all necessary packages and tools for Arch-based systems
 
 set -e
 
@@ -33,26 +33,57 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Function to install package if not exists
+# Function to install package if not exists using pacman
 install_package() {
     local package="$1"
     local package_name="${2:-$1}"
     
-    if command_exists "$package"; then
+    if pacman -Qi "$package" >/dev/null 2>&1; then
         print_success "$package_name is already installed"
     else
         print_status "Installing $package_name..."
-        sudo apt update
-        sudo apt install -y "$package"
+        sudo pacman -S --noconfirm "$package"
         print_success "$package_name installed successfully"
     fi
 }
 
-print_status "Installing dependencies for Ruan's dotfiles..."
+# Function to install AUR package using yay
+install_aur_package() {
+    local package="$1"
+    local package_name="${2:-$1}"
+    
+    if yay -Qi "$package" >/dev/null 2>&1; then
+        print_success "$package_name is already installed"
+    else
+        print_status "Installing $package_name from AUR..."
+        yay -S --noconfirm "$package"
+        print_success "$package_name installed successfully"
+    fi
+}
 
-# Update package list
-print_status "Updating package list..."
-sudo apt update
+print_status "Installing dependencies for Ruan's dotfiles on Arch Linux..."
+
+# Update package database
+print_status "Updating package database..."
+sudo pacman -Sy
+
+# Install yay if not present
+if ! command_exists "yay"; then
+    print_status "Installing yay AUR helper..."
+    if ! pacman -Qi "git" >/dev/null 2>&1; then
+        sudo pacman -S --noconfirm git
+    fi
+    cd /tmp
+    # Remove existing yay directory if it exists
+    rm -rf yay
+    git clone https://aur.archlinux.org/yay.git
+    cd yay
+    makepkg -si --noconfirm
+    cd ~
+    # Clean up temporary directory
+    rm -rf /tmp/yay
+    print_success "yay installed successfully"
+fi
 
 # Essential packages
 install_package "zsh" "Zsh"
@@ -60,51 +91,46 @@ install_package "curl" "cURL"
 install_package "wget" "Wget"
 install_package "git" "Git"
 install_package "vim" "Vim"
-install_package "build-essential" "Build Essential"
+install_package "base-devel" "Base Development Tools"
 
 # Development tools
 install_package "nodejs" "Node.js"
 install_package "npm" "npm"
-install_package "python3" "Python 3"
-install_package "python3-pip" "pip3"
+install_package "python" "Python 3"
+install_package "python-pip" "pip"
 install_package "ruby" "Ruby"
-install_package "ruby-dev" "Ruby Dev"
 
 # Terminal and editor tools
 install_package "lazygit" "LazyGit"
 install_package "htop" "htop"
 install_package "tree" "tree"
 install_package "ripgrep" "ripgrep"
-install_package "fd-find" "fd"
+install_package "fd" "fd"
 install_package "bat" "bat"
 install_package "fzf" "fzf"
-install_package "thefuck" "thefuck"
-install_package "silversearcher-ag" "The Silver Searcher (ag)"
+install_package "the_silver_searcher" "The Silver Searcher (ag)"
 
 # System utilities
 install_package "brightnessctl" "brightnessctl"
-install_package "xinput" "xinput"
+install_package "xorg-xinput" "xinput"
 install_package "expect" "expect"
 
 # VPN tools
 install_package "openvpn" "OpenVPN"
 install_package "openfortivpn" "OpenFortiVPN"
 
-# Ruby debugging and development tools
-install_package "ruby-debug-ide" "Ruby Debug IDE" || true
-install_package "ruby-debase" "Ruby Debase" || true
+# Install thefuck from AUR
+install_aur_package "thefuck" "thefuck"
+
+# Install GlobalProtect VPN client from AUR
+install_aur_package "globalprotect-openconnect" "GlobalProtect VPN Client"
+
+# Ruby version management (chruby alternative for Arch)
+install_aur_package "chruby" "chruby (Ruby version manager)"
+install_aur_package "ruby-install" "ruby-install"
 
 # Install Neovim
-if command_exists "nvim"; then
-    print_success "Neovim is already installed"
-else
-    print_status "Installing Neovim..."
-    sudo apt install -y software-properties-common
-    sudo add-apt-repository ppa:neovim-ppa/stable -y
-    sudo apt update
-    sudo apt install -y neovim
-    print_success "Neovim installed successfully"
-fi
+install_package "neovim" "Neovim"
 
 # Install Oh My Zsh
 if [ -d "$HOME/.oh-my-zsh" ]; then
@@ -133,16 +159,6 @@ else
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     source "$HOME/.cargo/env"
     print_success "Rust installed successfully"
-fi
-
-# Install Homebrew (for additional packages)
-if command_exists "brew"; then
-    print_success "Homebrew is already installed"
-else
-    print_status "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/linuxbrew-core/HEAD/install.sh)"
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-    print_success "Homebrew installed successfully"
 fi
 
 # Install Rust-based tools via cargo (after ensuring Rust is available)
@@ -177,13 +193,35 @@ else
     print_success "LunarVim installed successfully"
 fi
 
+# Additional Arch-specific improvements
+print_status "Installing additional Arch packages..."
+
+# Install paru as an alternative to yay (optional)
+install_aur_package "paru" "Paru AUR Helper"
+
+# Install some additional useful tools for development
+install_package "stow" "GNU Stow (for dotfile management)"
+install_package "tmux" "tmux"
+install_package "ranger" "Ranger file manager"
+install_package "openssh" "OpenSSH"
+
+# Install fonts for better terminal experience
+install_package "ttf-fira-code" "Fira Code Font"
+install_package "ttf-jetbrains-mono" "JetBrains Mono Font"
+install_aur_package "nerd-fonts-fira-code" "Nerd Fonts Fira Code"
+
 print_success "All dependencies installed successfully!"
 
 echo
 print_status "Next steps:"
-echo "1. Run the main installation script: ./install/install.sh"
+echo "1. Run the main installation script: ./install/install-arch.sh"
 echo "2. Restart your terminal"
 echo "3. Configure LunarVim by editing ~/.config/lvim/config.lua"
 echo "4. Set up shell aliases by sourcing: source ~/.zshrc"
 echo
-print_warning "Note: Some tools may require additional configuration after installation." 
+print_warning "Note: Some tools may require additional configuration after installation."
+print_status "Arch-specific notes:"
+echo "- Use 'pacman -S' for official packages"
+echo "- Use 'yay -S' or 'paru -S' for AUR packages"
+echo "- System updates: 'sudo pacman -Syu'"
+echo "- AUR updates: 'yay -Sua' or 'paru -Sua'"
